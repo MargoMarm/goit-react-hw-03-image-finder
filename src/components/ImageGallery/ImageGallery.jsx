@@ -9,18 +9,33 @@ import Button from 'components/Button/Button';
 class ImageGallery extends Component {
   state = {
     pictures: null,
+    page: 1,
     status: 'idle',
     isOpen: false,
     modalImgSrc: '',
   };
 
-  componentDidUpdate(prevProps, _) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps.searchQuery !== this.props.searchQuery) {
       this.setState({ status: 'pending' });
-      getPictures(this.props.searchQuery)
+      getPictures(this.props.searchQuery, this.state.page)
+        .then(response => response.json())
+        .then(data => {
+          this.setState({ pictures: data.hits, status: 'resolved' });
+        });
+    }
+    if (prevState.page !== this.state.page) {
+      this.setState({ status: 'pending' });
+
+      getPictures(this.props.searchQuery, this.state.page)
         .then(response => response.json())
         .then(data =>
-          this.setState({ pictures: data.hits, status: 'resolved' })
+          this.setState(prevState => {
+            return {
+              pictures: [...prevState.pictures, ...data.hits],
+              status: 'resolved',
+            };
+          })
         );
     }
   }
@@ -32,17 +47,7 @@ class ImageGallery extends Component {
   };
 
   onBtnClick = () => {
-    console.log('its working on btn click');
-
-    this.setState({ status: 'pending' });
-    getPictures(this.props.searchQuery)
-      .then(response => response.json())
-      .then(data =>
-        this.setState(prevState => ({
-          pictures: [...prevState.pictures, data.hits],
-          status: 'resolved',
-        }))
-      );
+    this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
   render() {
