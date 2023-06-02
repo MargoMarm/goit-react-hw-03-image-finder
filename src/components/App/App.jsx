@@ -22,8 +22,9 @@ export class App extends Component {
   componentDidUpdate(_, prevState) {
     const prevSearch = prevState.searchQuery;
     const prevPage = prevState.page;
-    const { searchQuery, page } = this.state;
-
+	  const { searchQuery, page } = this.state;
+	  
+    //check if there are any changes in state (new search query or click on load more btn)
     if (prevSearch !== searchQuery || prevPage !== page) {
       this.setState({ status: 'pending' });
       getPictures(searchQuery, page)
@@ -39,8 +40,9 @@ export class App extends Component {
     }
   }
 
-  handleSerach = searchQuery => {
-    this.setState({ searchQuery, totalPics: 0 });
+	handleSerach = searchQuery => {
+		console.log('dkjnros;bn')
+		this.setState({ searchQuery, totalPics: 0, page:1 });
   };
 
   onBtnClick = () => {
