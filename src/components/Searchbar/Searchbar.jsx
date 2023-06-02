@@ -1,8 +1,8 @@
 import { Component } from 'react';
+import { FcSearch } from 'react-icons/fc';
 import {
   Form,
   FormButton,
-  ButtonLabel,
   FormInput,
   Header,
 } from './Searchbar.styled';
@@ -28,7 +28,7 @@ class Searchbar extends Component {
       <Header>
         <Form type="submit" onSubmit={this.handleSubmit}>
           <FormButton>
-            <ButtonLabel>Search</ButtonLabel>
+            <FcSearch size="30"  />
           </FormButton>
 
           <FormInput
