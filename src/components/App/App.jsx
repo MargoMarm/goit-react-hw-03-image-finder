@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Searchbar from '../Searchbar/Searchbar';
@@ -10,6 +10,7 @@ import { Container } from './App.styled';
 import getPictures from '../services/getPictures';
 import Error from 'components/Error/Error';
 import { notification } from 'components/Notification/Notification';
+import { welcomingMessage } from 'components/WelcomingMessage/WelcomingMessage';
 
 export class App extends Component {
   state = {
@@ -22,7 +23,10 @@ export class App extends Component {
     modalImgSrc: '', // img for modal
     error: null, // error message
   };
-
+	componentDidMount() {
+		welcomingMessage();
+	
+}
   async componentDidUpdate(_, prevState) {
     const prevSearch = prevState.searchQuery;
     const prevPage = prevState.page;
