@@ -1,6 +1,6 @@
 import { Component } from 'react';
- import { ToastContainer } from 'react-toastify';
- import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Searchbar from '../Searchbar/Searchbar';
 import Button from 'components/Button/Button';
@@ -11,17 +11,16 @@ import getPictures from '../services/getPictures';
 import Error from 'components/Error/Error';
 import { notification } from 'components/Notification/Notification';
 
-
 export class App extends Component {
   state = {
     searchQuery: '',
     pictures: [],
     page: 1,
-    totalPics: null,
-    isOpen: false,
-    loading: false,
-	  modalImgSrc: '',
-	  error: null,
+    totalPics: null, // total number of pictures getted from server
+    isOpen: false, // modal state
+    loading: false, // loader/spinner
+    modalImgSrc: '', // img for modal
+    error: null, // error message
   };
 
   async componentDidUpdate(_, prevState) {
@@ -29,16 +28,15 @@ export class App extends Component {
     const prevPage = prevState.page;
     const { searchQuery, page } = this.state;
 
-    //check if there are any changes in state (new search query or click on load more btn)
+    //check if there are any changes in the state (new search query or click on load more btn)
     if (prevSearch !== searchQuery || prevPage !== page) {
       this.setState({ loading: true });
 
       try {
         const response = await getPictures(searchQuery, page);
-			const { hits, totalHits } = response.data;
-			console.log(response.data)
+        const { hits, totalHits } = response.data;
         this.setState(prevState => ({
-          pictures: page === 1 ? hits : [...prevState.pictures, ...hits],
+          pictures: page === 1 ? hits : [...prevState.pictures, ...hits], // if btn load more has been clicked spread current pictures's array and add new pictures
           totalPics: totalHits,
         }));
       } catch (error) {
@@ -49,13 +47,11 @@ export class App extends Component {
     }
   }
 
-	handleSerach = searchQuery => {
-		if (searchQuery === this.state.searchQuery) {
-			notification(
-        `Images of ${searchQuery} have already been displayed.`
-		  );
-		  return;
-	  }
+  handleSerach = searchQuery => {
+    if (searchQuery === this.state.searchQuery) {
+      notification(`Images of ${searchQuery} have already been displayed.`);
+      return;
+    }
     this.setState({
       searchQuery,
       pictures: [],
@@ -81,26 +77,31 @@ export class App extends Component {
   };
 
   render() {
-    const { pictures, loading, totalPics,  error, page, modalImgSrc, isOpen } =
-		 this.state;
+    const { pictures, loading, totalPics, error, page, modalImgSrc, isOpen } =
+      this.state;
     return (
       <Container>
         <Searchbar onSubmit={this.handleSerach} />
 
         <ImageGallery pictures={pictures} onClick={this.onModalOpen} />
 
+        {/* for wrong query */}
         {totalPics === 0 && (
           <Error errorText={'Sorry, nothing has been found at your request'} />
         )}
+        {/* for server error */}
         {error && (
           <Error
             errorText={`Something went wrong... ${error}. Please try again.`}
           />
         )}
+        {/* loader */}
         {loading && <Loader />}
+        {/* for displaying load more btn */}
         {totalPics / pictures.length > page && (
           <Button onClick={this.onBtnClick}></Button>
         )}
+        {/* for displaying modal window */}
         {isOpen && <Modal imgSrc={modalImgSrc} onClose={this.onModalClose} />}
         <ToastContainer />
       </Container>
