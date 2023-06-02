@@ -1,7 +1,8 @@
 import { ErrorText } from './Error.styled';
 
-const Error = () => {
-  return <ErrorText>Sorry, nothing has been found at your request</ErrorText>;
+const Error = ({ errorText }) => {
+	console.log(errorText)
+	return <ErrorText>{errorText}</ErrorText>;
 };
 
 export default Error;

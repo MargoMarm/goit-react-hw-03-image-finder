@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { notification } from 'components/Notification/Notification';
 import { FcSearch } from 'react-icons/fc';
 import {
   Form,
@@ -18,7 +19,12 @@ class Searchbar extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-
+	  if (this.state.value === '') {
+		  notification(
+        'The search input can not be empty. Please enter a search query'
+      );
+		  return
+ }
 	  this.props.onSubmit(this.state.value.trim().toLowerCase());
     this.setState({ value: '' });
   };
